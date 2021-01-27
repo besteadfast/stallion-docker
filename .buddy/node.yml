@@ -1,4 +1,5 @@
 - pipeline: "Node"
+  folder: "Node"
   trigger_mode: "ON_EVERY_PUSH"
   ref_name: "main"
   ref_type: "BRANCH"
