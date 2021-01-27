@@ -7,6 +7,7 @@
   trigger_condition: "ON_CHANGE_AT_PATH"
   trigger_condition_paths:
   - "/mariadb/"
+  - "/.buddy/mariadb.yml"
   actions:
   - action: "Lint Dockerfile"
     type: "DOCKERFILE_LINTER"
