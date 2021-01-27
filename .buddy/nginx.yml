@@ -1,4 +1,4 @@
-- pipeline: "PHP 7.4"
+- pipeline: "NGINX"
   trigger_mode: "ON_EVERY_PUSH"
   ref_name: "main"
   ref_type: "BRANCH"
@@ -6,20 +6,20 @@
   fail_on_prepare_env_warning: true
   trigger_condition: "ON_CHANGE_AT_PATH"
   trigger_condition_paths:
-  - "/php/7.4/"
+  - "/nginx/"
   actions:
   - action: "Lint Dockerfile"
     type: "DOCKERFILE_LINTER"
     disabled: true
-    local_path: "php/7.4/Dockerfile"
+    local_path: "nginx/Dockerfile"
     shell_type: "sh"
     trigger_condition: "ALWAYS"
   - action: "Build Docker image"
     type: "DOCKERFILE"
     login: "devbesteadfast"
     password: "secure!Qi+gqyIqn+gHrLlIt4xV+p4Q4PmwVoSbKlqO5jgILz/9zqe3GlljbLmbOb9RrBJW.aBR83zVWwzJTzK4xCdEWRA=="
-    docker_image_tag: "7.4"
-    dockerfile_path: "php/7.4/Dockerfile"
-    context_path: "php/7.4"
-    repository: "besteadfast/stallion-php"
+    docker_image_tag: "latest"
+    dockerfile_path: "nginx/Dockerfile"
+    context_path: "nginx"
+    repository: "besteadfast/stallion-nginx"
     trigger_condition: "ALWAYS"
