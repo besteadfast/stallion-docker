@@ -17,6 +17,7 @@ RUN set -ex \
 	&& apk add --no-cache \
 		freetype \
 		git \
+		gnu-libiconv \
 		icu \
 		imagemagick \
 		libjpeg-turbo \
@@ -25,9 +26,6 @@ RUN set -ex \
 		libzip \
 		mysql-client \
 		zip \
-	# Fix for iconv: https://github.com/docker-library/php/issues/240
-	&& apk add --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted \
-		gnu-libiconv \
 	# Pecl extensions
 	&& pecl install \
 		imagick \
@@ -47,8 +45,8 @@ RUN set -ex \
 	# Remove dependencies
 	&& apk del .build-deps
 
-# Fix for iconv: https://github.com/docker-library/php/issues/240
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+# Fix for iconv: https://github.com/docker-library/php/issues/1121
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 COPY ./php.ini /usr/local/etc/php/conf.d/zz-craftcms.ini
 COPY ./phpfpm.conf /usr/local/etc/php-fpm.d/zz-craftcms.conf
