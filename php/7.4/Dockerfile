@@ -65,16 +65,14 @@ RUN mkdir -p /app/web/cpresources && \
 
 WORKDIR /app
 
-# Force permissions, update Craft, and start php-fpm
-
-# Do a `composer install` without running any Composer scripts
-# - If `composer.lock` is present, it will install what is in the lock file
-# - If `composer.lock` is missing, it will update to the latest dependencies
-#   and create the `composer.lock` file
-# This automatic running adds to the startup overhead of `docker-compose up`
-# but saves far more time in not having to deal with out of sync versions
-# when working with teams or multiple environments
-CMD composer install --no-scripts --optimize-autoloader --no-interaction \
+# Install Composer dependencies, conditionally install Craft, force permissions, and start php-fpm
+CMD composer install --no-progress --no-scripts --optimize-autoloader --no-interaction \
+	&& \
+	php craft setup --interactive=0 \
+	&& \
+	set -a; . .env; set +a; php craft install/check \
+	|| \
+	php craft install/craft --interactive=0 --email=$USER_EMAIL --username=$USER_USERNAME --password=$USER_PASSWORD --siteName=$APP_NAME --siteUrl='$APP_URL' \
 	&& \
 	chown -R www-data:www-data /app/vendor \
 	&& \
