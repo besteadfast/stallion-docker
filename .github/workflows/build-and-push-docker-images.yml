@@ -32,3 +32,83 @@ jobs:
          push: true
          platforms: linux/amd64,linux/arm64
          tags: besteadfast/stallion-php:${{ matrix.php }}
+  build-node:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        node: [ "12" ]
+    steps:
+     - name: Check out the repository
+       uses: actions/checkout@v2
+     - name: Set up QEMU
+       uses: docker/setup-qemu-action@v1
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v1
+       with:
+         install: true
+     - name: Login to Docker Hub
+       uses: docker/login-action@v1
+       with:
+         username: ${{ secrets.DOCKERHUB_USERNAME }}
+         password: ${{ secrets.DOCKERHUB_TOKEN }}
+     - name: Build Node ${{ matrix.node }}
+       uses: docker/build-push-action@v2
+       with:
+         context: node/${{ matrix.node }}
+         file: node/${{ matrix.node }}/Dockerfile
+         push: true
+         platforms: linux/amd64,linux/arm64
+         tags: besteadfast/stallion-node:${{ matrix.node }}
+  build-nginx:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+     - name: Check out the repository
+       uses: actions/checkout@v2
+     - name: Set up QEMU
+       uses: docker/setup-qemu-action@v1
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v1
+       with:
+         install: true
+     - name: Login to Docker Hub
+       uses: docker/login-action@v1
+       with:
+         username: ${{ secrets.DOCKERHUB_USERNAME }}
+         password: ${{ secrets.DOCKERHUB_TOKEN }}
+     - name: Build NGINX
+       uses: docker/build-push-action@v2
+       with:
+         context: nginx/
+         file: nginx/Dockerfile
+         push: true
+         platforms: linux/amd64,linux/arm64
+         tags: besteadfast/stallion-nginx:latest
+  build-mariadb:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+     - name: Check out the repository
+       uses: actions/checkout@v2
+     - name: Set up QEMU
+       uses: docker/setup-qemu-action@v1
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v1
+       with:
+         install: true
+     - name: Login to Docker Hub
+       uses: docker/login-action@v1
+       with:
+         username: ${{ secrets.DOCKERHUB_USERNAME }}
+         password: ${{ secrets.DOCKERHUB_TOKEN }}
+     - name: Build MariaDB
+       uses: docker/build-push-action@v2
+       with:
+         context: mariadb/
+         file: mariadb/Dockerfile
+         push: true
+         platforms: linux/amd64,linux/arm64
+         tags: besteadfast/stallion-mariadb:latest
