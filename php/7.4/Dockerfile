@@ -20,6 +20,7 @@ RUN set -ex \
 		gnu-libiconv \
 		icu \
 		imagemagick \
+		libgomp \
 		libjpeg-turbo \
 		libpng \
 		libxml2 \
