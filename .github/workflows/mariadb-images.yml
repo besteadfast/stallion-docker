@@ -1,10 +1,15 @@
 name: MariaDB Images
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - mariadb/**
+      - .github/workflows/mariadb-images.yml
   workflow_dispatch:
 env:
   LATEST: 10
+  IMAGE: besteadfast/stallion-mariadb
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -49,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: besteadfast/stallion-mariadb
+          images: ${{ env.IMAGE }}
           tags: |
             type=raw,value=${{ steps.version.outputs.value }},enable=true,priority=${{ steps.version.outputs.value }}
             type=raw,value=latest,enable=${{ steps.version.outputs.value == env.LATEST }},priority=10000
@@ -66,3 +71,11 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
+      - name: Update image description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE }}
+          readme-filepath: mariadb/${{ steps.version.outputs.value }}/README.md
+          short-description: ${{ github.event.repository.description }}
