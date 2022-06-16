@@ -18,11 +18,9 @@ jobs:
         id: filter
         with:
           filters: |
-            shared: &shared
-              - .github/workflows/mariadb-images.yml
             mariadb-10:
-              - *shared
               - mariadb/10/**
+              - .github/workflows/mariadb-images.yml
   build:
     needs: changes
     runs-on: ubuntu-latest
