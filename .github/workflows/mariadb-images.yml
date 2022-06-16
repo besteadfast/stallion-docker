@@ -24,6 +24,7 @@ jobs:
       fail-fast: true
       matrix:
         mariadb: ${{ fromJSON(needs.changes.outputs.images) }}
+    if: ${{ needs.changes.outputs.images != '[]' }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
