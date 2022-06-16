@@ -3,6 +3,8 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+env:
+  LATEST: 10
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -16,9 +18,11 @@ jobs:
         id: filter
         with:
           filters: |
-            mariadb:
-              - mariadb/**
+            shared: &shared
               - .github/workflows/mariadb-images.yml
+            mariadb-10:
+              - *shared
+              - mariadb/10/**
   build:
     needs: changes
     runs-on: ubuntu-latest
@@ -28,14 +32,29 @@ jobs:
         mariadb: ${{ fromJSON(needs.changes.outputs.images) }}
     if: ${{ needs.changes.outputs.images != '[]' }}
     steps:
-      - name: Check out the repository
+      - name: Checkout the repository
         uses: actions/checkout@v2
-      - name: Set up QEMU
+      - name: Get version number
+        uses: mad9000/actions-find-and-replace-string@2
+        id: version
+        with:
+          source: ${{ matrix.mariadb }}
+          find: 'mariadb-'
+          replace: ''
+      - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
         with:
           install: true
+      - name: Generate Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: besteadfast/stallion-mariadb
+          tags: |
+            type=raw,value=${{ steps.version.outputs.value }},enable=true,priority=${{ steps.version.outputs.value }}
+            type=raw,value=latest,enable=${{ steps.version.outputs.value == env.LATEST }},priority=10000
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -44,8 +63,8 @@ jobs:
       - name: Build MariaDB
         uses: docker/build-push-action@v2
         with:
-          context: ${{ matrix.mariadb }}
-          file: ${{ matrix.mariadb }}/Dockerfile
+          context: mariadb/${{ steps.version.outputs.value }}
+          file: mariadb/${{ steps.version.outputs.value }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: besteadfast/stallion-mariadb:latest
+          tags: ${{ steps.meta.outputs.tags }}
