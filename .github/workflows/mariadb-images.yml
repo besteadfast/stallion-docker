@@ -1,4 +1,4 @@
-name: Build and Push MariaDB Docker Images
+name: MariaDB Images
 on:
   push:
     branches: [ main ]
@@ -16,7 +16,9 @@ jobs:
         id: filter
         with:
           filters: |
-            mariadb: mariadb/**
+            mariadb:
+              - mariadb/**
+              - .github/workflows/mariadb-images.yml
   build:
     needs: changes
     runs-on: ubuntu-latest
