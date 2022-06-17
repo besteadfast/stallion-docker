@@ -35,6 +35,7 @@ RUN set -ex \
 		gd --with-freetype --with-jpeg \
 	# Install extensions
 	&& docker-php-ext-install -j$(nproc) \
+		bcmath \
 		gd \
 		intl \
 		pdo_mysql \
