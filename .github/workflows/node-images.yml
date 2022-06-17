@@ -20,3 +20,4 @@ jobs:
         node-12:
           - node/12/**
           - .github/workflows/node-images.yml
+      secrets: inherit
