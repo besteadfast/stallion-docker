@@ -26,6 +26,9 @@ jobs:
             php-7.4:
               - php/7.4/**
               - .github/workflows/php-images.yml
+            php-8.0:
+              - php/8.0/**
+              - .github/workflows/php-images.yml
   build:
     needs: changes
     runs-on: ubuntu-latest
