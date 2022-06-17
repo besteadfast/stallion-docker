@@ -6,79 +6,21 @@ on:
     paths:
       - php/**
       - .github/workflows/php-images.yml
+      - .github/workflows/generic.yml
   workflow_dispatch:
-env:
-  LATEST: 8.0
-  IMAGE: besteadfast/stallion-php
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      images: ${{ steps.filter.outputs.changes }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-      - name: Filter paths with changes
-        uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            php-7.4:
-              - php/7.4/**
-              - .github/workflows/php-images.yml
-            php-8.0:
-              - php/8.0/**
-              - .github/workflows/php-images.yml
-  build:
-    needs: changes
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        php: ${{ fromJSON(needs.changes.outputs.images) }}
-    if: ${{ needs.changes.outputs.images != '[]' }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-      - name: Get version number
-        uses: mad9000/actions-find-and-replace-string@2
-        id: version
-        with:
-          source: ${{ matrix.php }}
-          find: 'php-'
-          replace: ''
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          install: true
-      - name: Generate Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.IMAGE }}
-          tags: |
-            type=raw,value=${{ steps.version.outputs.value }},enable=true,priority=${{ steps.version.outputs.value }}
-            type=raw,value=latest,enable=${{ steps.version.outputs.value == env.LATEST }},priority=10000
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build the image
-        uses: docker/build-push-action@v2
-        with:
-          context: php/${{ steps.version.outputs.value }}
-          file: php/${{ steps.version.outputs.value }}/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
-      - name: Update the image description
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: ${{ env.IMAGE }}
-          readme-filepath: php/${{ steps.version.outputs.value }}/README.md
-          short-description: ${{ github.event.repository.description }}
+  generic:
+    uses: ./.github/workflows/generic.yml
+    with:
+      image-name: 'php'
+      latest: '8.0'
+      filters: |
+        php-7.4:
+          - php/7.4/**
+          - .github/workflows/php-images.yml
+          - .github/workflows/generic.yml
+        php-8.0:
+          - php/8.0/**
+          - .github/workflows/php-images.yml
+          - .github/workflows/generic.yml
+    secrets: inherit
