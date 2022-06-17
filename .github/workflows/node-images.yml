@@ -6,6 +6,7 @@ on:
     paths:
       - node/**
       - .github/workflows/node-images.yml
+      - .github/workflows/generic.yml
   workflow_dispatch:
 jobs:
   generic:
@@ -17,7 +18,9 @@ jobs:
         node-10:
           - node/10/**
           - .github/workflows/node-images.yml
+          - .github/workflows/generic.yml
         node-12:
           - node/12/**
           - .github/workflows/node-images.yml
+          - .github/workflows/generic.yml
       secrets: inherit
