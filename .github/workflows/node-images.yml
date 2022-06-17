@@ -1,0 +1,24 @@
+name: Node Images
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - node/**
+      - .github/workflows/node-images.yml
+  workflow_dispatch:
+jobs:
+  generic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/generic
+        with:
+          image-name: 'node'
+          latest: '12'
+          filters: |
+            node-10:
+              - node/10/**
+              - .github/workflows/node-images.yml
+            node-12:
+              - node/12/**
+              - .github/workflows/node-images.yml
