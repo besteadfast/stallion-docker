@@ -11,6 +11,13 @@ on:
       filters:
         required: true
         type: string
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_PASSWORD:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
 jobs:
   changes:
     runs-on: ubuntu-latest
