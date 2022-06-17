@@ -11,7 +11,7 @@ jobs:
   generic:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/generic
+      - uses: ./.github/workflows/generic.yml
         with:
           image-name: 'node'
           latest: '12'
