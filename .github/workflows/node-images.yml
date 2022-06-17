@@ -23,4 +23,4 @@ jobs:
           - node/12/**
           - .github/workflows/node-images.yml
           - .github/workflows/generic.yml
-      secrets: inherit
+    secrets: inherit
