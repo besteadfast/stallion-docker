@@ -90,7 +90,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: ${{ env.IMAGE }}
+          repository: besteadfast/stallion-${{ inputs.image-name }}
           readme-filepath: ${{ inputs.image-name }}/${{ steps.version.outputs.value }}/README.md
           short-description: ${{ github.event.repository.description }}
       - name: Move cache
