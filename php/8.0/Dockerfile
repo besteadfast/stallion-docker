@@ -52,6 +52,12 @@ COPY ./phpfpm.conf /usr/local/etc/php-fpm.d/zz-craftcms.conf
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
+RUN mkdir -p /app
+
+RUN chown -R www-data:www-data /app
+
 WORKDIR /app
+
+USER www-data
 
 CMD	php-fpm
