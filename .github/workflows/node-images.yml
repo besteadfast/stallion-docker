@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/generic.yml
     with:
       image-name: 'node'
-      latest: '12'
+      latest: '16'
       filters: |
         node-10:
           - node/10/**
@@ -21,6 +21,10 @@ jobs:
           - .github/workflows/generic.yml
         node-12:
           - node/12/**
+          - .github/workflows/node-images.yml
+          - .github/workflows/generic.yml
+        node-16:
+          - node/16/**
           - .github/workflows/node-images.yml
           - .github/workflows/generic.yml
     secrets: inherit
